@@ -221,7 +221,7 @@ export default function App() {
     try {
       const reportData = {
         week: WEEKS.find(w => w.id === selectedWeekId)?.label || selectedWeekId,
-        habits: habits.map(h => ({ id: h.id, label: h.label })),
+        habits: habits.map(h => ({ id: h.id, label: h.label, emoji: h.emoji })),
         data: data
       };
       const result = await generateHabitReport(reportData);
@@ -247,7 +247,6 @@ export default function App() {
         ...prev,
         [selectedWeekId]: JSON.parse(JSON.stringify(initialWeekData))
       }));
-      setHabits(INITIAL_HABITS);
       setReports(prev => ({
         ...prev,
         [selectedWeekId]: null
@@ -372,7 +371,7 @@ export default function App() {
               className="space-y-8"
             >
               {/* Stats Overview */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
                 <div className="glass-card p-4 sm:p-6 flex flex-col justify-between">
                   <div className="flex items-center justify-between mb-3 sm:mb-4">
                     <span className="text-xs sm:text-sm font-medium text-zinc-500">Desempenho Geral</span>
@@ -391,7 +390,7 @@ export default function App() {
                   </div>
                 </div>
 
-                <div className="glass-card p-4 sm:p-6 col-span-1 md:col-span-2">
+                <div className="glass-card p-4 sm:p-6 col-span-1 sm:col-span-2">
                   <span className="text-xs sm:text-sm font-medium text-zinc-500 block mb-3 sm:mb-4">Progresso Diário</span>
                   <div className="h-32 w-full">
                     <ResponsiveContainer width="100%" height="100%">
@@ -492,7 +491,7 @@ export default function App() {
                   )}
                 </div>
                 
-                <div className="hidden md:block glass-card overflow-hidden">
+                <div className="hidden sm:block glass-card overflow-hidden">
                   <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                       <thead>
@@ -582,7 +581,7 @@ export default function App() {
               </div>
 
               {/* Mobile View: Habit Cards */}
-                <div className="md:hidden space-y-3">
+                <div className="sm:hidden space-y-3">
                 {habits.map(habit => (
                   <div key={habit.id} className="glass-card p-3 sm:p-4">
                     <div className="flex items-center justify-between mb-3 sm:mb-4">
@@ -845,9 +844,9 @@ export default function App() {
 
                 {/* Library Search & Grid */}
                 <section className="space-y-4 sm:space-y-6">
-                  <div className="flex flex-col md:flex-row gap-3 sm:gap-4 items-center justify-between sticky top-0 bg-white py-2 z-10">
+                  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-center justify-between sticky top-0 bg-white py-2 z-10">
                     <h3 className="text-[10px] sm:text-xs font-bold text-zinc-400 uppercase tracking-wider">Biblioteca (250+)</h3>
-                    <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full md:w-auto">
+                    <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
                       <div className="relative flex-1 sm:w-64">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 sm:w-4 sm:h-4" size={14} />
                         <input 
