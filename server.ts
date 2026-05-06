@@ -18,6 +18,29 @@ async function startServer() {
   app.use(express.json());
   app.use(cookieParser());
 
+  app.post("/api/gemini", async (req, res) => {
+    try {
+      const { prompt } = req.body;
+      const apiKey = process.env.GEMINI_API_KEY;
+
+      if (!apiKey) {
+        return res.status(500).json({ error: "GEMINI_API_KEY not configured" });
+      }
+
+      const response = await axios.post(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+        {
+          contents: [{ parts: [{ text: prompt }] }],
+        }
+      );
+
+      res.json(response.data);
+    } catch (error: any) {
+      console.error("Gemini API Error:", error.response?.data || error.message);
+      res.status(500).json({ error: "Failed to generate content" });
+    }
+  });
+
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({

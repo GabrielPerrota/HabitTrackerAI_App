@@ -1,11 +1,5 @@
-import { GoogleGenAI } from "@google/genai";
-
-const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
-
 export const generateHabitReport = async (data: any) => {
-  const result = await genAI.models.generateContent({
-    model: "gemini-3-flash-preview",
-    contents: `Analise os seguintes dados de hábitos:
+  const prompt = `Analise os seguintes dados de hábitos:
 ${JSON.stringify(data, null, 2)}
 
 DIRETRIZES:
@@ -36,11 +30,23 @@ Para cada hábito que mereça destaque (positivo ou negativo), crie um bloco seg
 ---
 
 ## 📋 Plano de Próximos Passos
-[Cite 3 metas claras para a semana seguinte, focando em consistência].`,
-    config: {
-      systemInstruction: "Você é um especialista em formação de hábitos e psicologia comportamental.",
-    },
-  });
+[Cite 3 metas claras para a semana seguinte, focando em consistência].`;
 
-  return result.text || "Não foi possível analisar os dados agora.";
+  try {
+    const response = await fetch("/api/gemini", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to call backend API");
+    }
+
+    const result = await response.json();
+    return result.candidates?.[0]?.content?.parts?.[0]?.text || "Não foi possível analisar os dados agora.";
+  } catch (error) {
+    console.error("Gemini Error:", error);
+    return "Erro ao processar sua solicitação.";
+  }
 };
