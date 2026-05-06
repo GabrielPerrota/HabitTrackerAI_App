@@ -40,7 +40,9 @@ Para cada hábito que mereça destaque (positivo ou negativo), crie um bloco seg
     });
 
     if (!response.ok) {
-      throw new Error("Failed to call backend API");
+      const errorData = await response.json().catch(() => ({}));
+      console.error("API Error Response:", errorData);
+      throw new Error(`Failed to call backend API: ${response.status} ${response.statusText}`);
     }
 
     const result = await response.json();
