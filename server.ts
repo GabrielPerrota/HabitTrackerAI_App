@@ -17,7 +17,7 @@ const PORT = 3000;
 app.use(express.json());
 app.use(cookieParser());
 
-app.post("/api/gemini", async (req, res) => {
+app.post(["/api/gemini", "/gemini"], async (req, res) => {
   try {
     const { prompt } = req.body;
     const apiKey = process.env.GEMINI_API_KEY;
@@ -42,6 +42,11 @@ app.post("/api/gemini", async (req, res) => {
 
 // Vite middleware for development
 async function setupVite() {
+  if (process.env.VERCEL) {
+    // On Vercel, static files are served by the platform, not Express
+    return;
+  }
+
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
       server: { middlewareMode: true },
